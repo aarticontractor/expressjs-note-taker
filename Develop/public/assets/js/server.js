@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 const PORT = 3002;
 
-app.use(express.static('public'));
+app.use(express.static('Develop/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
