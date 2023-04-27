@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = 3002;
@@ -22,7 +23,19 @@ app.get('/api/notes', (req, res) => {
     res.json(notes);
   });
   
- 
+app.post('/api/notes', (req, res) => {
+    const newNote = req.body;
+    console.log("Body is: "+newNote);
+    newNote.id = uuidv4();
+    const db_file = path.join(__dirname, '../../../db/db.json')
+    const notes = JSON.parse(fs.readFileSync(db_file, 'utf8'));
+    console.log("Notes is" +notes);
+    notes.push(newNote);
+    console.log("New Note pushed is" +notes);
+    fs.writeFileSync(db_file, JSON.stringify(notes));
+    res.json(newNote);
+  });
+
 // Add HTML Wildcard route at the end
   app.get('*', (req, res) => {
       
