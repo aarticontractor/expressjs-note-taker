@@ -12,7 +12,7 @@ app.use(express.static('Develop/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// HTML Routes to acces the homepage
+// HTML Routes to access the homepage
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, '../../notes.html'));
 });
