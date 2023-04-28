@@ -17,8 +17,7 @@ app.get('/notes', (req, res) => {
 
 // API Routes for added notes page
 app.get('/api/notes', (req, res) => {
-    console.log("I am here");
-    const db_file = path.join(__dirname, '../../../db/db.json')
+    const db_file = path.join(__dirname, '../../../db/db.json');
     const notes = JSON.parse(fs.readFileSync(db_file, 'utf8'));
     res.json(notes);
   });
@@ -27,13 +26,33 @@ app.post('/api/notes', (req, res) => {
     const newNote = req.body;
     console.log("Body is: "+newNote);
     newNote.id = uuidv4();
-    const db_file = path.join(__dirname, '../../../db/db.json')
+    const db_file = path.join(__dirname, '../../../db/db.json');
     const notes = JSON.parse(fs.readFileSync(db_file, 'utf8'));
     console.log("Notes is" +notes);
     notes.push(newNote);
     console.log("New Note pushed is" +notes);
     fs.writeFileSync(db_file, JSON.stringify(notes));
     res.json(newNote);
+  });
+
+app.delete('/api/notes/:id', (req, res) => {
+    const noteId = req.params.id;
+    console.log("NoteID To delete: " +noteId);
+    const db_file = path.join(__dirname, '../../../db/db.json');
+    const notes = JSON.parse(fs.readFileSync(db_file, 'utf8'));
+    const updatedNotes = [];
+
+    for (let i = 0; i < notes.length; i++) {
+        const note = notes[i];
+        if (note.id !== noteId) {
+            updatedNotes.push(note);
+        }
+    }
+
+    const updatedNotesJSON = JSON.stringify(updatedNotes);
+    fs.writeFileSync(db_file, updatedNotesJSON);
+
+    res.json({ success: true });
   });
 
 // Add HTML Wildcard route at the end
