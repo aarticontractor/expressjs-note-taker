@@ -1,21 +1,23 @@
+// Import required packages
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+// downloaded npm package 'uuid'for generating random id's
 const { v4: uuidv4 } = require('uuid');
-
 const app = express();
+// As the application is deployed on Heroku, it can work on Heroku's environment port, else use port 3000.
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static('Develop/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// HTML Routes
+// HTML Routes to acces the homepage
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, '../../notes.html'));
 });
 
-// API Routes for added notes page
+// API Routes for added notes page (GET, POST, and DELETE)
 app.get('/api/notes', (req, res) => {
     const db_file = path.join(__dirname, '../../../db/db.json');
     const notes = JSON.parse(fs.readFileSync(db_file, 'utf8'));
@@ -42,13 +44,14 @@ app.delete('/api/notes/:id', (req, res) => {
     const notes = JSON.parse(fs.readFileSync(db_file, 'utf8'));
     const updatedNotes = [];
 
+// The for-loop will iterate through the notes length and check for the id that matches the deleted note and store it in 'notes' variable
     for (let i = 0; i < notes.length; i++) {
         const note = notes[i];
         if (note.id !== noteId) {
             updatedNotes.push(note);
         }
     }
-
+// The deleted note will get stored in 'notes' and the remaining existing notes will be updated in 'updatedNotesJSON' variable.
     const updatedNotesJSON = JSON.stringify(updatedNotes);
     fs.writeFileSync(db_file, updatedNotesJSON);
 
